@@ -8,6 +8,7 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" type="text/css" href="css/common.css" charset="utf-8">
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
 
   <!-- Include libraries -->
   <script src="lib/jquery-1.7.min.js" type="text/javascript" charset="utf-8"></script>
@@ -16,13 +17,13 @@
   <link href="lib/mobiscroll-1.5.2/css/mobiscroll-1.5.2.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <h1>Touch Journey Planner</h1>
+  <h1 id="page-title">Touch Journey Planner</h1>
   <div id="map_canvas"></div>
   <div id="sidebar">
     <div id="timefield" data-role="fieldcontain">
-      <label>Departure time<br/>
-        <input type="text" name="time" id="time" class="mobiscroll" value="" />
-      </label>
+      <label for="time">Departure time</label>
+      <input type="text" name="time" id="time" class="mobiscroll" value="" />
+      
       <a id="now" class="selected" href="javascript:;">Now</a>
     </div>
     <div id="results"></div>

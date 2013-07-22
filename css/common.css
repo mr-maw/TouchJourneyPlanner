@@ -1,7 +1,7 @@
 html, body {
   width: 100%;
   height: 100%;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Arial, sans-serif;
   padding: 0;
   margin: 0;
   overflow: hidden;
@@ -14,7 +14,7 @@ html, body, p, a, div {
   cursor: default;
 }
 
-h1 {
+#page-title {
   position:absolute;
   z-index: 100;
   margin-left: 100px;
@@ -24,9 +24,12 @@ h1 {
   font-size: 16px;
 }
 #map_canvas {
-  width: 70%;
+  width: 100%;
   height: 100%;
-  float: left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
 }
 #map_switches {
   position: absolute;
@@ -57,65 +60,43 @@ h1 {
 
 #sidebar {
   width: 30%;
+  padding: 20px;
   height: 100%;
   position: relative;
+  z-index: 1000000;
   float: left;
   overflow: hidden;
-  background: white;
-  box-shadow: -1px -1px 10px rgba(0,0,0, .5);
+  background: transparent;
 }
 #timefield {
   display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 100;
   width: 100%;
   box-sizing: border-box;
-  padding: 5px 10px;
-  background: #efe;
-  border-bottom: 1px solid #ccc;
-  box-shadow: 1px 4px 10px #fff;
   margin-bottom: 20px;
   line-height: 35px;
-  height: 90px;
-  font-weight: bold;
 }
 #timefield input {
-  display: inline-block;
-  vertical-align: bottom;
-  height: 30px;
-  line-height: 30px;
-  width: 100px;
-  font-size: 25px;
+  display: block;
+  box-sizing: border-box;
+  height: 35px;
+  line-height: 35px;
+  width: 100%;
   text-align: center;
-  border: 0 solid rgba(0,0,0, .2);
-  background: rgba(255,255,255, .9);
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 20px;
   font-weight: normal;
-  box-shadow: inset 1px 1px 8px rgba(0,0,0, .4);
-  margin: 0;
+  font-family: "Open Sans", Arial, sans-serif;
+  box-shadow: 1px 1px 5px #000;
+  margin-bottom: 20px;
+  border-radius: 2px;
 }
-#timefield #now {
+#timefield #now,
+#timefield label {
   display: none;
-  vertical-align: bottom;
-  height: 30px;
-  line-height: 30px;
-  padding: 0 10px 0 30px;
-  margin: 0;
-  text-decoration: none;
-  color: #ccc;
-  background: #ffffff url(../images/switch-off.png) 10px 50% no-repeat;
-  border: 1px solid #ccc;
-  border-top-width: 0;
-  border-right-width: 0;
 }
-#timefield #now.selected {
-  color: #008000;
-  background-image: url(../images/switch-on.png);
-  background-color: transparent;
-  border-color: transparent;
-}
-#results {
+
+/*#results {
     position: absolute;
     top: 90px;
     left: 0;
@@ -123,33 +104,31 @@ h1 {
     bottom: 10px;
     width: 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 0;
     margin: 0;
-}
+}*/
 .result {
   box-sizing: border-box;
-  width: 90%;
   padding: 10px;
   margin: 5px;
-  border-top-left-radius: 3px;
-  border-bottom-right-radius: 3px;
+  border-radius: 2px;
   box-shadow: 1px 1px 5px rgba(0,0,0, .2);
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
   position: relative;
   overflow: hidden;
+  background-color: #ddd;
 }
-/*.result:hover{
-  background-color: #efe;
-  box-shadow: 1px 1px 5px rgba(0,0,0, .5);
-}*/
 .result.selected {
-  background-color: #cfc;
+  background-color: #fff;
   box-shadow: 1px 1px 5px rgba(0,0,0, .5);
 }
-.result h3 {
+.result .number {
+    display: none;
+}
+/*.result .number {
   margin: 0;
   font-size: 22px;
   width: 30px;
@@ -162,24 +141,27 @@ h1 {
   left: 0;
   color: #fff;
   background: #363;
-  border-top-left-radius: 3px;
-  border-bottom-right-radius: 3px;
-}
-.result h4 {
-  padding-left: 30px;
-  margin: -2px 0 10px;
+  border-top-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}*/
+.result h1 {
+  margin: 0 0 10px;
   font-size: 18px;
-  font-weight: normal;
+  font-weight: 300;
 }
 
 .result ol {
   margin: 10px 0;
   padding: 0;
   list-style: none;
+  display: none;
 }
+/*.result.selected ol {
+  display: block;
+}*/
 .result li {
   margin-bottom: 4px;
-  color: #333;
+  color: #555;
 }
 
 .result .time {

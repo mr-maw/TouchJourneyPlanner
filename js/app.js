@@ -75,6 +75,11 @@ $(document).ready(function() {
             streetViewControl: false,
             mapTypeControl: false,
             rotateControl: false,
+            panControl: false,
+            zoomControlOptions: {
+                position: google.maps.ControlPosition.BOTTOM_LEFT,
+                style: google.maps.ZoomControlStyle.SMALL
+            },
             mapTypeControlOptions: {
                 mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.HYBRID, 'custom']
             }
@@ -458,10 +463,14 @@ $(document).ready(function() {
                         console.log(route);
                         var result = $("<div class='result'></div>");
                         //if ()
-                        result.append("<h3>" + (i + 1) + "</h3>");
+                        result.append($("<div class='number'>" + (i + 1) + "</div>"));
                         var startTime = route.legs[0].locs[0].depTime;
                         var endTime = route.legs[route.legs.length - 1].locs[route.legs[route.legs.length - 1].locs.length - 1].arrTime;
-                        result.append("<h4>" + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) + "&ndash;" + endTime.substr(8, 2) + ":" + endTime.substr(10, 2) + " (" + route.duration / 60 + " mins)" + "</h4>");
+                        result.append(
+                            $("<h1>" + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) 
+                                + " &ndash; " + endTime.substr(8, 2) + ":" + endTime.substr(10, 2) 
+                                + " (" + route.duration / 60 + " mins)" + "</h1>")
+                            );
     
                         var legs = $("<ol></ol>").appendTo(result);
     
@@ -494,7 +503,7 @@ $(document).ready(function() {
     
                             $.each(leg.locs, function(i, loc) {
                                 routePath.push(new google.maps.LatLng(loc.coord.y, loc.coord.x));
-                            })
+                            });
                         });
     
                         $("#results").append(result);
@@ -502,14 +511,23 @@ $(document).ready(function() {
                         // Show route on map when clicked
                         result.click(function() {
                             showRoute(route.legs);
-                            $(".result").removeClass("selected");
-                            result.addClass("selected");
+                            $(".result")
+                                .removeClass("selected")
+                                .find("ol")
+                                .slideUp("fast");
+                            result
+                                .addClass("selected")
+                                .find("ol")
+                                .slideDown("fast");
                         });
     
                         // Show the first result immediately
                         if (i === 0) {
                             showRoute(route.legs);
-                            result.addClass("selected");
+                            result
+                                .addClass("selected")
+                                .find("ol")
+                                .slideDown("fast");
                         }
                     });
                 }
