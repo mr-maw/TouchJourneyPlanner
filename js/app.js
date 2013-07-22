@@ -87,7 +87,7 @@ $(document).ready(function() {
         map.mapTypes.set('custom', customMapType);
         map.setMapTypeId('custom');
 
-        var startDefaultLatLng = new google.maps.LatLng(60.1707374, 24.9413685);
+        var startDefaultLatLng = new google.maps.LatLng(60.1807374, 24.9413685);
         var endDefaultLatLng = null;
 
         // Get start and end from config, if available
@@ -100,28 +100,44 @@ $(document).ready(function() {
             }
         });
         
+        
+        var startIcon = new google.maps.MarkerImage("images/your-position-small.png", null, null, new google.maps.Point(10, 10)); console.log(startIcon);
+        
         if (navigator.geolocation) {
-            
+            console.log("geolocation");
             navigator.geolocation.getCurrentPosition(function(position) {
-                startDefaultLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                handleGeolocation(position);
             }, function() {
                 handleNoGeolocation();
             });
         }
         
+        function handleGeolocation(position) {
+            startDefaultLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            startMarker = new google.maps.Marker({
+                position: startDefaultLatLng,
+                draggable: false,
+                title: "Start",
+                icon: startIcon
+            });
+            startMarker.setMap(map);
+            console.log("geolocation set");
+        }
+        
         function handleNoGeolocation() {
             alert("Geolocation service failed.");
+            startMarker = new google.maps.Marker({
+                position: startDefaultLatLng,
+                draggable: false,
+                title: "Start",
+                icon: startIcon
+            });
+            startMarker.setMap(map);
         }
 
 
-        var startIcon = new google.maps.MarkerImage("images/your-position-small.png", null, null, new google.maps.Point(10, 10)); console.log(startIcon);
-        startMarker = new google.maps.Marker({
-            position: startDefaultLatLng,
-            draggable: false,
-            title: "Start",
-            icon: startIcon
-        });
-        startMarker.setMap(map);
+        
+        
         //google.maps.event.addListener(startMarker, 'mouseup', getRoute);
 
         if (endDefaultLatLng) {
