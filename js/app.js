@@ -10,16 +10,16 @@ $(document).ready(function() {
     initializeMap();
     initializeTimeSelector();
 
-    var map;
-    var startMarker;
-    var endMarker;
-    var otherMarkers;
-    var polyline;
-    var legLinesAndMarkers;
+    var map,
+        startMarker,
+        endMarker,
+        otherMarkers,
+        polyline,
+        legLinesAndMarkers;
 
     function initializeTimeSelector() {
         var now = new Date();
-        //$('#time').val(now.getHours()+":"+now.getMinutes())
+        
         $('#time').scroller({
             preset: 'time',
             ampm: false,
@@ -40,8 +40,6 @@ $(document).ready(function() {
         $("#now").addClass("selected");
     }
 
-    var legLinesAndMarkers;
-
     function initializeMap() {
         var c = config.locs.mapcenter;
         var latlng = new google.maps.LatLng(c.lat, c.lng);
@@ -59,7 +57,7 @@ $(document).ready(function() {
         }, {
             featureType: "water",
             stylers: [{
-                lightness: -20
+                lightness: -10
             }]
         }, {
             featureType: "poi",
@@ -68,7 +66,7 @@ $(document).ready(function() {
                 visibility: "off"
             }]
         }], {
-            name: "AaltoWindow style"
+            name: "Custom"
         });
 
         var myOptions = {
@@ -87,8 +85,8 @@ $(document).ready(function() {
         map.mapTypes.set('custom', customMapType);
         map.setMapTypeId('custom');
 
-        var startDefaultLatLng = new google.maps.LatLng(60.1807374, 24.9413685);
-        var endDefaultLatLng = null;
+        var startDefaultLatLng = new google.maps.LatLng(60.1807374, 24.9413685),
+            endDefaultLatLng = null;
 
         // Get start and end from config, if available
         $.each(config.locs, function(i, loc) {
@@ -101,7 +99,7 @@ $(document).ready(function() {
         });
         
         
-        var startIcon = new google.maps.MarkerImage("images/your-position-small.png", null, null, new google.maps.Point(10, 10)); console.log(startIcon);
+        var startIcon = new google.maps.MarkerImage("images/your-position-small.png", null, null, new google.maps.Point(10, 10));
         
         if (navigator.geolocation) {
             console.log("geolocation");
@@ -260,7 +258,7 @@ $(document).ready(function() {
     }
 
     function getTransportHex(type, variant) {
-        color = "";
+        var color = "";
         switch (type) {
         case "walk":
             color = "499bff";
@@ -277,9 +275,13 @@ $(document).ready(function() {
         case "train":
             color = "e9001a";
             break;
-            // bus
+        case "bus":
+            color = "193695";
+            break;
+        // bus
         default:
             color = "193695";
+            break;
         }
 
         if (variant === "light") {
@@ -299,7 +301,10 @@ $(document).ready(function() {
             case "train":
                 color = "ff7d61";
                 break;
-                // bus
+            case "bus":
+                color = "5a65cc";
+                break;
+            // bus
             default:
                 color = "5a65cc";
             }
@@ -359,9 +364,9 @@ $(document).ready(function() {
     function showRoute(legs) {
         // remove any current lines
         for (var i in legLinesAndMarkers) {
-            legLinesAndMarkers[i]["polyline"].setMap(null);
-            if (legLinesAndMarkers[i]["marker"]) {
-                legLinesAndMarkers[i]["marker"].setMap(null);
+            legLinesAndMarkers[i].polyline.setMap(null);
+            if (legLinesAndMarkers[i].marker) {
+                legLinesAndMarkers[i].marker.setMap(null);
             }
             legLinesAndMarkers[i] = null;
         }
@@ -390,7 +395,6 @@ $(document).ready(function() {
     }
 
     function formatVehicleCode(code, type) {
-        //console.log('code:'+code);
         var vehicleString = "";
         if (type === "train") {
             vehicleString = code.substring(4, 5);
@@ -420,7 +424,7 @@ $(document).ready(function() {
     function getRoute() {
         if (lastRouteMillis + config.routeRefreshMinTime < new Date().valueOf()) {
             
-            console.log("getRoute")
+            console.log("getRoute");
     
             if (!startMarker || !endMarker) {
                 return false;
@@ -429,22 +433,19 @@ $(document).ready(function() {
             $("#loader").fadeIn();
     
             // Clear current data
-            $("#results").empty()
-            //polyline.setPath([]);
+            $("#results").empty();
             showRoute({});
     
-            var fromLatLng = startMarker.getPosition()
-            var from = fromLatLng.lng() + "," + fromLatLng.lat()
-            //console.log("from:"+from)
+            var fromLatLng = startMarker.getPosition();
+            var from = fromLatLng.lng() + "," + fromLatLng.lat();
     
-            var toLatLng = endMarker.getPosition()
-            var to = toLatLng.lng() + "," + toLatLng.lat()
-            //console.log("to:"+to)
+            var toLatLng = endMarker.getPosition();
+            var to = toLatLng.lng() + "," + toLatLng.lat();
     
             var time = $("#time").val().replace(":", "");
     
-            var params = "?request=route&from=" + from + "&to=" + to + "&time=" + time + "&format=json&epsg_in=wgs84&epsg_out=wgs84"
-            var account = "&user=" + config.user + "&pass=" + config.pass
+            var params = "?request=route&from=" + from + "&to=" + to + "&time=" + time + "&format=json&epsg_in=wgs84&epsg_out=wgs84";
+            var account = "&user=" + config.user + "&pass=" + config.pass;
     
             $.getJSON(config.api + params + account, function(data) {
                 $("#loader").fadeOut();
@@ -452,7 +453,7 @@ $(document).ready(function() {
                 if (data && data[0]) {
                     $.each(data, function(i, val) {
                         var route = val[0];
-                        var routePath = []
+                        var routePath = [];
     
                         console.log(route);
                         var result = $("<div class='result'></div>");
@@ -462,15 +463,15 @@ $(document).ready(function() {
                         var endTime = route.legs[route.legs.length - 1].locs[route.legs[route.legs.length - 1].locs.length - 1].arrTime;
                         result.append("<h4>" + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) + "&ndash;" + endTime.substr(8, 2) + ":" + endTime.substr(10, 2) + " (" + route.duration / 60 + " mins)" + "</h4>");
     
-                        var legs = $("<ol></ol>").appendTo(result)
+                        var legs = $("<ol></ol>").appendTo(result);
     
                         $.each(route.legs, function(i, leg) {
-                            var legItem = $("<li></li>").appendTo(legs)
+                            var legItem = $("<li></li>").appendTo(legs);
     
                             var time = leg.locs[0].depTime;
                             legItem.append("<span class='time'>" + time.substr(8, 2) + ":" + time.substr(10, 2) + "</span> ");
     
-                            var type = getLegTypeString(leg.type)
+                            var type = getLegTypeString(leg.type);
                             legItem.append("<span class='type'>" + type + "</span> ");
     
                             if (type === "walk") {
@@ -483,7 +484,7 @@ $(document).ready(function() {
                                 if (leg.locs[0].name) startEndString += leg.locs[0].name;
                                 else startEndString += "???";
                                 startEndString += " &ndash; ";
-                                if (leg.locs[leg.locs.length - 1].name) startEndString += leg.locs[leg.locs.length - 1].name
+                                if (leg.locs[leg.locs.length - 1].name) startEndString += leg.locs[leg.locs.length - 1].name;
                                 else startEndString += "???";
                                 startEndString += "</span>";
     
@@ -492,25 +493,23 @@ $(document).ready(function() {
     
     
                             $.each(leg.locs, function(i, loc) {
-                                routePath.push(new google.maps.LatLng(loc.coord.y, loc.coord.x))
+                                routePath.push(new google.maps.LatLng(loc.coord.y, loc.coord.x));
                             })
                         });
     
-                        //result.append("Length: " + route.length + "m<br/>");
-                        //result.append("Duration: " + route.duration/60 + " minutes");
                         $("#results").append(result);
     
                         // Show route on map when clicked
                         result.click(function() {
                             showRoute(route.legs);
-                            $(".result").removeClass("selected")
-                            result.addClass("selected")
-                        })
+                            $(".result").removeClass("selected");
+                            result.addClass("selected");
+                        });
     
                         // Show the first result immediately
                         if (i === 0) {
                             showRoute(route.legs);
-                            result.addClass("selected")
+                            result.addClass("selected");
                         }
                     });
                 }
@@ -527,19 +526,14 @@ $(document).ready(function() {
         switch (typeId) {
         case "walk":
             return "walk";
-            break;
         case "2":
             return "tram";
-            break;
         case "6":
             return "metro";
-            break;
         case "7":
             return "ferry";
-            break;
         case "12":
             return "train";
-            break;
         default:
             return "bus";
         }
@@ -547,10 +541,7 @@ $(document).ready(function() {
 
     function initializeTimeChooser() {
         console.log("timeChooser");
-
         $("body").append($("<div id='overlay'></div>"));
-
         $("body").append($("<div id='time-chooser'></div>"));
-
     }
 });
