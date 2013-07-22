@@ -121,6 +121,7 @@ $(document).ready(function() {
                 icon: startIcon
             });
             startMarker.setMap(map);
+            map.setCenter(startDefaultLatLng);
             console.log("geolocation set");
         }
         
@@ -133,6 +134,8 @@ $(document).ready(function() {
                 icon: startIcon
             });
             startMarker.setMap(map);
+            map.setCenter(startDefaultLatLng);
+            
         }
 
 
