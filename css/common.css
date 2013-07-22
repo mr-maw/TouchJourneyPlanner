@@ -15,10 +15,10 @@ h1 {
   position:absolute;
   z-index: 100;
   margin-left: 100px;
-  display:inline;
+  display:none;
   color: #fff;
   text-shadow: 0 0 10px rgba(0,0,0, .9);
-  font-size: 36px;
+  font-size: 16px;
 }
 #map_canvas {
   width:75%;

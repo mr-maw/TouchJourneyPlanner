@@ -17,6 +17,9 @@ var config = {
   "api":"apiProxy/hsl/prod/",
   "user":"",
   "pass":"",
+  "routeRefreshMinTime":2000, // milliseconds
+  "longPressTime":300, // milliseconds
+  "longPressThreshold":10, //pixels
   "locs": {
     "mapcenter": {
       "lat":60.181925,

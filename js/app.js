@@ -1,5 +1,11 @@
 $(document).ready(function() {
-    console.log("Hello World from app.js");
+    if(!window.console) {
+        window.console = function(){};
+        console.log = function(){};
+        console.debug = function(){};
+    }
+    
+    /*console.log("Hello World from app.js");*/
 
     initializeMap();
     initializeTimeSelector();
@@ -69,6 +75,8 @@ $(document).ready(function() {
             zoom: 12,
             center: latlng,
             streetViewControl: false,
+            mapTypeControl: false,
+            rotateControl: false,
             mapTypeControlOptions: {
                 mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.HYBRID, 'custom']
             }
@@ -93,21 +101,16 @@ $(document).ready(function() {
         });
         
         if (navigator.geolocation) {
-            browserSupportFlag = true;
+            
             navigator.geolocation.getCurrentPosition(function(position) {
                 startDefaultLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             }, function() {
-                handleNoGeolocation(browserSupportFlag);
+                handleNoGeolocation();
             });
         }
         
-        function handleNoGeolocation(errorFlag) {
-            if (errorFlag == true) {
-                alert("Geolocation service failed.");
-            }
-            else {
-                alert("Your browser doesn't support geolocation.");
-            }
+        function handleNoGeolocation() {
+            alert("Geolocation service failed.");
         }
 
 
@@ -154,31 +157,32 @@ $(document).ready(function() {
 
         legLinesAndMarkers = [];
 
-        function LongClick(map, length) {
+        var LongClick = function(map, length) {
             this._length = length;
             var me = this;
             me._map = map;
             google.maps.event.addListener(map, 'mousedown', function(e) {
-                me._onMouseDown(e)
+                me._onMouseDown(e);
             });
             google.maps.event.addListener(map, 'mouseup', function(e) {
-                me._onMouseUp(e)
+                console.log(e);
+                me._onMouseUp(e);
             });
-        }
+        };
         LongClick.prototype._onMouseUp = function(e) {
-            var now = +new Date;
+            var now = new Date();
             if (now - this._down > this._length) {
                 if (Math.abs(e.pixel.x - this._x) < config.longPressThreshold && Math.abs(e.pixel.y - this._y) < config.longPressThreshold) {
                     google.maps.event.trigger(this._map, 'longpress', e);
                 }
             }
-        }
+        };
         LongClick.prototype._onMouseDown = function(e) {
-            this._down = +new Date;
+            this._down = new Date();
             this._x = e.pixel.x;
             this._y = e.pixel.y;
-        }
-        new LongClick(map, 300);
+        };
+        var longClick = new LongClick(map, config.longPressTime);
         google.maps.event.addListener(map, 'longpress', function(e) {
             routeTo(e.latLng);
         });
@@ -187,11 +191,13 @@ $(document).ready(function() {
         });
     }
 
+    
     function routeTo(latLng) {
         if (!endMarker) addEndMarker(latLng);
-
+        
         endMarker.setPosition(latLng);
         getRoute();
+        lastRouteMillis = new Date().valueOf();
     }
 
     function addEndMarker(latLng) {
@@ -390,105 +396,112 @@ $(document).ready(function() {
         return vehicleString;
     }
 
+    var lastRouteMillis = 0;
+    
     function getRoute() {
-        console.log("getRoute")
-
-        if (!startMarker || !endMarker) {
-            return false;
-        }
-
-        $("#loader").fadeIn();
-
-        // Clear current data
-        $("#results").empty()
-        //polyline.setPath([]);
-        showRoute({});
-
-        var fromLatLng = startMarker.getPosition()
-        var from = fromLatLng.lng() + "," + fromLatLng.lat()
-        //console.log("from:"+from)
-
-        var toLatLng = endMarker.getPosition()
-        var to = toLatLng.lng() + "," + toLatLng.lat()
-        //console.log("to:"+to)
-
-        var time = $("#time").val().replace(":", "");
-
-        var params = "?request=route&from=" + from + "&to=" + to + "&time=" + time + "&format=json&epsg_in=wgs84&epsg_out=wgs84"
-        var account = "&user=" + config.user + "&pass=" + config.pass
-
-        $.getJSON(config.api + params + account, function(data) {
-            $("#loader").fadeOut();
-            console.log(data);
-            if (data && data[0]) {
-                $.each(data, function(i, val) {
-                    var route = val[0];
-                    var routePath = []
-
-                    console.log(route);
-                    var result = $("<div class='result'></div>");
-                    //if ()
-                    result.append("<h3>" + (i + 1) + "</h3>");
-                    var startTime = route.legs[0].locs[0].depTime;
-                    var endTime = route.legs[route.legs.length - 1].locs[route.legs[route.legs.length - 1].locs.length - 1].arrTime;
-                    result.append("<h4>" + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) + "&ndash;" + endTime.substr(8, 2) + ":" + endTime.substr(10, 2) + " (" + route.duration / 60 + " mins)" + "</h4>");
-
-                    var legs = $("<ol></ol>").appendTo(result)
-
-                    $.each(route.legs, function(i, leg) {
-                        var legItem = $("<li></li>").appendTo(legs)
-
-                        var time = leg.locs[0].depTime;
-                        legItem.append("<span class='time'>" + time.substr(8, 2) + ":" + time.substr(10, 2) + "</span> ");
-
-                        var type = getLegTypeString(leg.type)
-                        legItem.append("<span class='type'>" + type + "</span> ");
-
-                        if (type === "walk") {
-                            legItem.append("<span class='meters'>" + leg.length + " m</span>");
-                        }
-                        else {
-                            legItem.append("<span class='type'>" + formatVehicleCode(leg.code, type) + "</span> ");
-
-                            var startEndString = "<span class='places'>";
-                            if (leg.locs[0].name) startEndString += leg.locs[0].name;
-                            else startEndString += "???";
-                            startEndString += " &ndash; ";
-                            if (leg.locs[leg.locs.length - 1].name) startEndString += leg.locs[leg.locs.length - 1].name
-                            else startEndString += "???";
-                            startEndString += "</span>";
-
-                            legItem.append(startEndString);
-                        }
-
-
-                        $.each(leg.locs, function(i, loc) {
-                            routePath.push(new google.maps.LatLng(loc.coord.y, loc.coord.x))
+        if (lastRouteMillis + config.routeRefreshMinTime < new Date().valueOf()) {
+            
+            console.log("getRoute")
+    
+            if (!startMarker || !endMarker) {
+                return false;
+            }
+    
+            $("#loader").fadeIn();
+    
+            // Clear current data
+            $("#results").empty()
+            //polyline.setPath([]);
+            showRoute({});
+    
+            var fromLatLng = startMarker.getPosition()
+            var from = fromLatLng.lng() + "," + fromLatLng.lat()
+            //console.log("from:"+from)
+    
+            var toLatLng = endMarker.getPosition()
+            var to = toLatLng.lng() + "," + toLatLng.lat()
+            //console.log("to:"+to)
+    
+            var time = $("#time").val().replace(":", "");
+    
+            var params = "?request=route&from=" + from + "&to=" + to + "&time=" + time + "&format=json&epsg_in=wgs84&epsg_out=wgs84"
+            var account = "&user=" + config.user + "&pass=" + config.pass
+    
+            $.getJSON(config.api + params + account, function(data) {
+                $("#loader").fadeOut();
+                console.log(data);
+                if (data && data[0]) {
+                    $.each(data, function(i, val) {
+                        var route = val[0];
+                        var routePath = []
+    
+                        console.log(route);
+                        var result = $("<div class='result'></div>");
+                        //if ()
+                        result.append("<h3>" + (i + 1) + "</h3>");
+                        var startTime = route.legs[0].locs[0].depTime;
+                        var endTime = route.legs[route.legs.length - 1].locs[route.legs[route.legs.length - 1].locs.length - 1].arrTime;
+                        result.append("<h4>" + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) + "&ndash;" + endTime.substr(8, 2) + ":" + endTime.substr(10, 2) + " (" + route.duration / 60 + " mins)" + "</h4>");
+    
+                        var legs = $("<ol></ol>").appendTo(result)
+    
+                        $.each(route.legs, function(i, leg) {
+                            var legItem = $("<li></li>").appendTo(legs)
+    
+                            var time = leg.locs[0].depTime;
+                            legItem.append("<span class='time'>" + time.substr(8, 2) + ":" + time.substr(10, 2) + "</span> ");
+    
+                            var type = getLegTypeString(leg.type)
+                            legItem.append("<span class='type'>" + type + "</span> ");
+    
+                            if (type === "walk") {
+                                legItem.append("<span class='meters'>" + leg.length + " m</span>");
+                            }
+                            else {
+                                legItem.append("<span class='type'>" + formatVehicleCode(leg.code, type) + "</span> ");
+    
+                                var startEndString = "<span class='places'>";
+                                if (leg.locs[0].name) startEndString += leg.locs[0].name;
+                                else startEndString += "???";
+                                startEndString += " &ndash; ";
+                                if (leg.locs[leg.locs.length - 1].name) startEndString += leg.locs[leg.locs.length - 1].name
+                                else startEndString += "???";
+                                startEndString += "</span>";
+    
+                                legItem.append(startEndString);
+                            }
+    
+    
+                            $.each(leg.locs, function(i, loc) {
+                                routePath.push(new google.maps.LatLng(loc.coord.y, loc.coord.x))
+                            })
+                        });
+    
+                        //result.append("Length: " + route.length + "m<br/>");
+                        //result.append("Duration: " + route.duration/60 + " minutes");
+                        $("#results").append(result);
+    
+                        // Show route on map when clicked
+                        result.click(function() {
+                            showRoute(route.legs);
+                            $(".result").removeClass("selected")
+                            result.addClass("selected")
                         })
+    
+                        // Show the first result immediately
+                        if (i === 0) {
+                            showRoute(route.legs);
+                            result.addClass("selected")
+                        }
                     });
-
-                    //result.append("Length: " + route.length + "m<br/>");
-                    //result.append("Duration: " + route.duration/60 + " minutes");
-                    $("#results").append(result);
-
-                    // Show route on map when clicked
-                    result.click(function() {
-                        showRoute(route.legs);
-                        $(".result").removeClass("selected")
-                        result.addClass("selected")
-                    })
-
-                    // Show the first result immediately
-                    if (i === 0) {
-                        showRoute(route.legs);
-                        result.addClass("selected")
-                    }
-                });
-            }
-            else {
-                $("#results").html("<h2>No routes!</h2>");
-            }
-        });
+                }
+                else {
+                    $("#results").html("<h2>No routes!</h2>");
+                }
+            });
+        } else {
+            console.log("< 2000 ms, skipping routing");
+        }
     }
 
     function getLegTypeString(typeId) {
@@ -516,9 +529,9 @@ $(document).ready(function() {
     function initializeTimeChooser() {
         console.log("timeChooser");
 
-        $("body").append("<div id='overlay'></div>");
+        $("body").append($("<div id='overlay'></div>"));
 
-        $("body").append("<div id='time-chooser'></div>");
+        $("body").append($("<div id='time-chooser'></div>"));
 
     }
 });
