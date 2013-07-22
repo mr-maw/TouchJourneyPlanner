@@ -540,7 +540,6 @@ $(document).ready(function() {
     }
 
     function initializeTimeChooser() {
-        console.log("timeChooser");
         $("body").append($("<div id='overlay'></div>"));
         $("body").append($("<div id='time-chooser'></div>"));
     }

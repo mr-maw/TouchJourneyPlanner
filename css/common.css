@@ -4,8 +4,11 @@ html, body {
   font-family: Helvetica, Arial, sans-serif;
   padding: 0;
   margin: 0;
+  overflow: hidden;
 }
-html * {
+html, body, p, a, div {
+  -ms-user-select: none;
+  -moz-user-select: none;
   -webkit-user-select: none;
   user-select: none;
   cursor: default;
@@ -21,9 +24,9 @@ h1 {
   font-size: 16px;
 }
 #map_canvas {
-  width:75%;
-  height:100%;
-  position: relative;
+  width: 70%;
+  height: 100%;
+  float: left;
 }
 #map_switches {
   position: absolute;
@@ -53,43 +56,47 @@ h1 {
 }
 
 #sidebar {
-  width: 25%;
-  position: absolute;
-  right: 0;
-  top: 0;
+  width: 30%;
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  position: relative;
+  float: left;
+  overflow: hidden;
   background: white;
   box-shadow: -1px -1px 10px rgba(0,0,0, .5);
 }
 #timefield {
   display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
   padding: 5px 10px;
   background: #efe;
-  box-shadow: 1px 1px 5px rgba(0,0,0, .4);
+  border-bottom: 1px solid #ccc;
+  box-shadow: 1px 4px 10px #fff;
   margin-bottom: 20px;
-  line-height: 30px;
+  line-height: 35px;
+  height: 90px;
   font-weight: bold;
-}
-#timefield label {
 }
 #timefield input {
   display: inline-block;
   vertical-align: bottom;
   height: 30px;
   line-height: 30px;
-  width: 65%;
+  width: 100px;
   font-size: 25px;
   text-align: center;
-  border: 0px solid rgba(0,0,0, .2);
+  border: 0 solid rgba(0,0,0, .2);
   background: rgba(255,255,255, .9);
   font-weight: normal;
   box-shadow: inset 1px 1px 8px rgba(0,0,0, .4);
   margin: 0;
 }
-#timefield a#now {
-  display: inline-block;
+#timefield #now {
+  display: none;
   vertical-align: bottom;
   height: 30px;
   line-height: 30px;
@@ -101,16 +108,28 @@ h1 {
   border: 1px solid #ccc;
   border-top-width: 0;
   border-right-width: 0;
-  margin: 0;
 }
-#timefield a#now.selected {
+#timefield #now.selected {
   color: #008000;
   background-image: url(../images/switch-on.png);
   background-color: transparent;
   border-color: transparent;
 }
-
+#results {
+    position: absolute;
+    top: 90px;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 0;
+    margin: 0;
+}
 .result {
+  box-sizing: border-box;
+  width: 90%;
   padding: 10px;
   margin: 5px;
   border-top-left-radius: 3px;
@@ -120,11 +139,12 @@ h1 {
   -moz-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
   position: relative;
+  overflow: hidden;
 }
-.result:hover{
+/*.result:hover{
   background-color: #efe;
   box-shadow: 1px 1px 5px rgba(0,0,0, .5);
-}
+}*/
 .result.selected {
   background-color: #cfc;
   box-shadow: 1px 1px 5px rgba(0,0,0, .5);
@@ -214,4 +234,6 @@ h1 {
 	0%{opacity:0.3;}
 	50%{opacity:1;background-color:#111}
 	100%{opacity:0.3;}
+}
+
 }
