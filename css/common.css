@@ -62,19 +62,25 @@ html, body, p, a, div {
   width: 300px;
   padding: 20px;
   max-height: 100%;
+  box-sizing: border-box;
   position: relative;
   z-index: 1000000;
   float: left;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: transparent;
 }
 #timefield {
   display: block;
-  width: 100%;
+  width: 260px;
+  padding: 0;
   box-sizing: border-box;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   line-height: 35px;
   position: relative;
+  -webkit-box-shadow: 1px 1px 5px #333;
+  box-shadow: 1px 1px 5px #333;
+  border-radius: 2px;
 }
 #timefield input {
   display: block;
@@ -83,13 +89,11 @@ html, body, p, a, div {
   line-height: 35px;
   width: 100%;
   text-align: center;
-  border: 1px solid #ddd;
+  border: 0 none;
   background: #fff;
   font-size: 20px;
   font-weight: normal;
   font-family: "Open Sans", Arial, sans-serif;
-  /*box-shadow: 1px 1px 5px #000;*/
-  margin-bottom: 20px;
   border-radius: 2px;
 }
 #timefield #now,
@@ -97,25 +101,20 @@ html, body, p, a, div {
   display: none;
 }
 
-/*#results {
-    position: absolute;
-    top: 90px;
-    left: 0;
-    right: 0;
-    bottom: 10px;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+#results {
+    width: 260px;
     padding: 0;
     margin: 0;
-}*/
+    display: none;
+}
 .result {
   box-sizing: border-box;
   padding: 10px;
-  margin: 5px;
+  margin: 5px 0;
   border-radius: 2px;
   border: 1px solid #ddd;
-  /*box-shadow: 1px 1px 5px rgba(0,0,0, .2);*/
+  -webkit-box-shadow: 1px 1px 5px #333;
+  box-shadow: 1px 1px 5px #333;
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;

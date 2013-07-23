@@ -428,13 +428,17 @@ $(document).ready(function() {
             }
     
             $("#loader").fadeIn();
+            if ($("#results").not(":visible"))
+                $("#results").show();
     
             // Clear current data
             $(".result")
                 .off('click') // event listener
                 .fadeOut('fast',
                     function(){
-                        $(this).html(''); // HTML    
+                        $(this)
+                            .removeClass('selected')
+                            .html(''); // HTML    
                     });
             showRoute({});
     
