@@ -455,7 +455,7 @@ $(document).ready(function() {
                 //console.log(data);
                 if (data && data[0]) {
                     var resultSet = $(".result");
-                    for (var i = 0; i < resultSet.length; i++) {
+                    $.each(resultSet, function(i, val){
                         var route = data[i][0];
                         var routePath = [];
                         
@@ -514,7 +514,7 @@ $(document).ready(function() {
                                 .removeClass("selected")
                                 .find("ol")
                                 .slideUp("fast");
-                            result
+                            $(this)
                                 .addClass("selected")
                                 .find("ol")
                                 .slideDown("fast");
@@ -528,7 +528,7 @@ $(document).ready(function() {
                                 .find("ol")
                                 .slideDown("fast");
                         }
-                    }
+                    });
                 }
                 else {
                     $(".result")
