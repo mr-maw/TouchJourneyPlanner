@@ -18,26 +18,19 @@ $(document).ready(function() {
         legLinesAndMarkers;
 
     function initializeTimeSelector() {
-        var now = new Date();
-        
-        $('#time').scroller({
-            preset: 'time',
-            ampm: false,
-            timeFormat: 'HH:ii',
-            onSelect: function() {
-                $("#now").removeClass("selected");
-                getRoute();
-            }    
-        });
-        $('#now').click(function() {
-            setTimeNow();
-        });
         setTimeNow();
+        
+        $('#time').on('change', function(){
+            console.log("time changed");
+            if (endMarker) {
+                getRoute();
+            }
+        });
     }
 
     function setTimeNow() {
-        $('#time').scroller('setDate', new Date(), true);
-        $("#now").addClass("selected");
+        var now = new Date();
+        $('#time').val(now.getHours()+':'+now.getMinutes());
     }
 
     function initializeMap() {
@@ -307,6 +300,8 @@ $(document).ready(function() {
             return "train";
         case "ferry":
             return "ship";
+        case "walk":
+            return "glyphish_walk";
         default:
             return type;
         }
@@ -323,8 +318,7 @@ $(document).ready(function() {
         polyline = new google.maps.Polyline({
             path: path,
             strokeColor: color,
-            strokeOpacity: 0.9,
-            strokeWeight: 5,
+            strokeWeight: 4,
             clickable: false
         });
         polyline.setMap(map);
@@ -370,10 +364,10 @@ $(document).ready(function() {
             var type = getLegTypeString(leg.type);
             var marker = null;
             if (type !== "walk") {
-                var vehicleNumber = formatVehicleCode(leg.code, type);
+                var markerText = formatVehicleCode(leg.code, type);
                 marker = createMarker(
                     new google.maps.LatLng(leg.locs[0].coord.y, leg.locs[0].coord.x), 
-                    vehicleNumber, 
+                    markerText, 
                     type
                     );
             }
@@ -469,15 +463,26 @@ $(document).ready(function() {
                         //result.append($("<div class='number'>" + (i + 1) + "</div>"));
                         var startTime = route.legs[0].locs[0].depTime;
                         var endTime = route.legs[route.legs.length - 1].locs[route.legs[route.legs.length - 1].locs.length - 1].arrTime;
+                        var firstVehicle = "walk";
+                        var longestLeg = 0;
+                        if (route.legs.length > 1) {
+                            longestLeg = route.legs[1].length;
+                            var type = getLegTypeString(route.legs[1].type);
+                            firstVehicle = 
+                                type + " " + formatVehicleCode(route.legs[1].code, type);
+                        }
                         result.append(
-                            $("<h1>" + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) 
-                                + " &ndash; " + endTime.substr(8, 2) + ":" + endTime.substr(10, 2) 
-                                + " (" + route.duration / 60 + " mins)" + "</h1>")
+                                $("<h1>"
+                                + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) + " "
+                                + "<span class='vehicle'>" + firstVehicle + "</span> "
+                                + "(" + route.duration / 60 + " mins)" 
+                                + "</h1>")
                             );
                         
                         var legs = $("<ol></ol>").appendTo(result);
-                        
-                        route.legs.forEach(function(leg, i, array) {
+                        //console.log(route);
+                        route.legs.forEach(function(leg, n, array) {
+                            
                             var legItem = $("<li></li>").appendTo(legs);
                             
                             var time = leg.locs[0].depTime;
@@ -490,7 +495,15 @@ $(document).ready(function() {
                                 legItem.append("<span class='meters'>" + leg.length + " m</span>");
                             }
                             else {
-                                legItem.append("<span class='type'>" + formatVehicleCode(leg.code, type) + "</span> ");
+                                var vehicleCode = formatVehicleCode(leg.code, type);
+                                if (leg.length > longestLeg) {
+                                    longestLeg = leg.length;
+                                    var curType = getLegTypeString(leg.type);
+                                    var curVehicle = 
+                                        curType + " " + formatVehicleCode(leg.code, curType);
+                                    result.find(".vehicle").text(curVehicle);
+                                }
+                                legItem.append("<span class='type'>" + vehicleCode + "</span> ");
                             
                                 var startEndString = "<span class='places'>";
                                 if (leg.locs[0].name) startEndString += leg.locs[0].name;
@@ -563,8 +576,4 @@ $(document).ready(function() {
         }
     }
 
-    function initializeTimeChooser() {
-        $("body").append($("<div id='overlay'></div>"));
-        $("body").append($("<div id='time-chooser'></div>"));
-    }
 });

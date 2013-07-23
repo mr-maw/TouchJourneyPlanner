@@ -72,7 +72,8 @@ html, body, p, a, div {
 }
 #timefield {
   display: block;
-  width: 260px;
+  float: left;
+  /*width: 260px;*/
   padding: 0;
   box-sizing: border-box;
   margin-bottom: 10px;
@@ -82,12 +83,12 @@ html, body, p, a, div {
   box-shadow: 1px 1px 5px #333;
   border-radius: 2px;
 }
-#timefield input {
+#time {
   display: block;
   box-sizing: border-box;
   height: 35px;
   line-height: 35px;
-  width: 100%;
+  width: 260px;
   text-align: center;
   border: 0 none;
   background: #fff;
@@ -106,6 +107,7 @@ html, body, p, a, div {
     padding: 0;
     margin: 0;
     display: none;
+    clear: both;
 }
 .result {
   box-sizing: border-box;
@@ -147,9 +149,12 @@ html, body, p, a, div {
   border-bottom-right-radius: 2px;
 }*/
 .result h1 {
-  margin: 0 0 10px;
+  margin: 0;
   font-size: 18px;
   font-weight: 300;
+}
+.result .vehicle {
+  font-weight: 600;
 }
 
 .result ol {
@@ -165,7 +170,6 @@ html, body, p, a, div {
   margin-bottom: 4px;
   color: #555;
 }
-
 .result .time {
   width: 50px;
   display: block;
