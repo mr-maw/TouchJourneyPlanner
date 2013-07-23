@@ -1,4 +1,4 @@
-Helsinki area Journey Planner for touch environments.
+Helsinki area public transit journey planner for touch environments.
 
 Description
 -----------
