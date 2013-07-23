@@ -325,7 +325,27 @@ $(document).ready(function() {
 
         return polyline;
     }
+    
+    var geocoder = new google.maps.Geocoder();
 
+    function geocodePosition(pos, callback) {
+        geocoder.geocode({
+            latLng: pos
+        }, function(responses) {
+            if (responses && responses.length > 0) {
+                var response = responses[0];
+                console.log(response);
+                var responseStr = response.address_components[1].long_name 
+                    + " " + response.address_components[0].long_name;
+                callback(responseStr);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+    }
+    
     function createMarker(LatLng, vehicle, type) {
         var color = getTransportHex(type);
         var icontype = getIconType(type);
@@ -505,16 +525,20 @@ $(document).ready(function() {
                                 }
                                 legItem.append("<span class='type'>" + vehicleCode + "</span> ");
                             
-                                var startEndString = "<span class='places'>";
-                                if (leg.locs[0].name) startEndString += leg.locs[0].name;
-                                else startEndString += "???";
-                                startEndString += " &ndash; ";
-                                if (leg.locs[leg.locs.length - 1].name) startEndString += leg.locs[leg.locs.length - 1].name;
-                                else startEndString += "???";
-                                startEndString += "</span>";
-                            
-                                legItem.append(startEndString);
                             }
+                            var startEndString = "<span class='places'>";
+                            startEndString += "&rsaquo; ";
+                            if (leg.locs[leg.locs.length - 1].name) startEndString += leg.locs[leg.locs.length - 1].name;
+                            startEndString += "</span>";
+                            if (n === route.legs.length - 1) {
+                                var lastLoc = leg.locs[leg.locs.length - 1];
+                                var lastPos = new google.maps.LatLng(lastLoc.coord.y, lastLoc.coord.x);
+                                geocodePosition(lastPos, function(response) { 
+                                    legItem.find(".places").html("&rsaquo; "+response);
+                                });
+                            }
+                        
+                            legItem.append(startEndString);
                             
                             
                             leg.locs.forEach(function(loc, i, array) {
