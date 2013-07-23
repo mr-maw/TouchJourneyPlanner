@@ -41,7 +41,7 @@ html, body, p, a, div {
   top: 0;
   right: 0;
   background: #fff;
-  box-shadow: -1px 1px 5px rgba(0,0,0, .5);
+  /*box-shadow: -1px 1px 5px rgba(0,0,0, .5);*/
 }
 #map_switches a {
   padding: 10px 10px 10px 30px;
@@ -59,9 +59,9 @@ html, body, p, a, div {
 }
 
 #sidebar {
-  width: 30%;
+  width: 300px;
   padding: 20px;
-  height: 100%;
+  max-height: 100%;
   position: relative;
   z-index: 1000000;
   float: left;
@@ -74,6 +74,7 @@ html, body, p, a, div {
   box-sizing: border-box;
   margin-bottom: 20px;
   line-height: 35px;
+  position: relative;
 }
 #timefield input {
   display: block;
@@ -87,7 +88,7 @@ html, body, p, a, div {
   font-size: 20px;
   font-weight: normal;
   font-family: "Open Sans", Arial, sans-serif;
-  box-shadow: 1px 1px 5px #000;
+  /*box-shadow: 1px 1px 5px #000;*/
   margin-bottom: 20px;
   border-radius: 2px;
 }
@@ -113,17 +114,19 @@ html, body, p, a, div {
   padding: 10px;
   margin: 5px;
   border-radius: 2px;
-  box-shadow: 1px 1px 5px rgba(0,0,0, .2);
+  border: 1px solid #ddd;
+  /*box-shadow: 1px 1px 5px rgba(0,0,0, .2);*/
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
   position: relative;
   overflow: hidden;
   background-color: #ddd;
+  display: none;
 }
 .result.selected {
   background-color: #fff;
-  box-shadow: 1px 1px 5px rgba(0,0,0, .5);
+  /*box-shadow: 1px 1px 5px rgba(0,0,0, .5);*/
 }
 .result .number {
     display: none;
@@ -173,9 +176,6 @@ html, body, p, a, div {
   color: #000;
   font-weight: bold;
 }
-.result .meters {
-
-}
 
 .result .places {
   padding-left: 50px;
@@ -185,9 +185,8 @@ html, body, p, a, div {
 /* Loader animation */
 #loader{
 	position: absolute;
-	left: 50%;
-	top: 50%;
-	margin-left: -34.5px;
+	right: 10px;
+	top: 10px;
 	display: none;
 }
 .circle{
@@ -216,6 +215,4 @@ html, body, p, a, div {
 	0%{opacity:0.3;}
 	50%{opacity:1;background-color:#111}
 	100%{opacity:0.3;}
-}
-
 }

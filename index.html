@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Touch Journey Planner</title>
   
-  <meta name="viewport" content="width=1024, user-scalable=no">
+  <meta name="viewport" content="width=800, user-scalable=no">
 
   <!-- Stylesheets -->
   <link rel="stylesheet" type="text/css" href="css/common.css" charset="utf-8">
@@ -25,13 +25,18 @@
       <input type="text" name="time" id="time" class="mobiscroll" value="" />
       
       <a id="now" class="selected" href="javascript:;">Now</a>
+      <div id='loader'>
+        <div id='circle_1' class='circle'></div>
+        <div id='circle_2' class='circle'></div>
+        <div id='circle_3' class='circle'></div>      
+      </div>
     </div>
-    <div id="results"></div>
-    <div id='loader'>
-      <div id='circle_1' class='circle'></div>
-      <div id='circle_2' class='circle'></div>
-      <div id='circle_3' class='circle'></div>
+    <div id="results">
+        <div class="result"></div>
+        <div class="result"></div>
+        <div class="result"></div>
     </div>
+    
   </div>
 
   <!-- Application scripts -->
