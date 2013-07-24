@@ -474,6 +474,7 @@ $(document).ready(function() {
                 $("#loader").fadeOut();
                 //console.log(data);
                 if (data && data[0]) {
+                    
                     var resultSet = $(".result");
                     $.each(resultSet, function(i, val){
                         var route = data[i][0];

@@ -1,19 +1,29 @@
 var express = require('express'),
     app = express(),
     restler = require('restler');
-  
+
+app.use(express.logger());
+
+
 app.use(express.static(__dirname));
 app.use(express.static("js"));
 app.use(express.static("css"));
 app.use(express.static("lib"));
 app.use(express.static("images"));
 
-app.get('/apiProxy/:uri',function(req, res){
+app.get('/apiProxy/*',function(req, res){
 
-    var request = req.params.uri;
-
-    restler.get('http://api.reittiopas.fi/' + request, {})
+    var request = req.url.replace('/apiProxy/','/');
+    
+    restler.get('http://api.reittiopas.fi/hsl/prod' + request, {})
         .on('complete', function(data) {
+            console.log("request complete");
+            data = JSON.parse(data);
             res.json(data);
         });
+});
+
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+    console.log("Listening on " + port);
 });
