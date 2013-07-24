@@ -472,7 +472,7 @@ $(document).ready(function() {
     
             $.getJSON(config.api + params + account, function(data) {
                 $("#loader").fadeOut();
-                //console.log(data);
+                if (data.error) console.log(data);
                 if (data && data[0]) {
                     
                     var resultSet = $(".result");

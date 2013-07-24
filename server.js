@@ -18,6 +18,9 @@ app.get('/apiProxy/*',function(req, res){
     restler.get('http://api.reittiopas.fi/hsl/prod' + request, {})
         .on('complete', function(data) {
             console.log("request complete");
+            if (data[0] === '<') {
+                data = '{"error":"bad response", "serversaid":'+JSON.stringify(data)+'}';
+            }
             data = JSON.parse(data);
             res.json(data);
         });
