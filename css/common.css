@@ -129,25 +129,21 @@ html, body, p, a, div {
   background-color: #fff;
   /*box-shadow: 1px 1px 5px rgba(0,0,0, .5);*/
 }
-.result .number {
-    display: none;
-}
-/*.result .number {
-  margin: 0;
-  font-size: 22px;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-  font-weight: bold;
+.result .close-button {
+  display: block;
   position: absolute;
-  top: 0;
-  left: 0;
-  color: #fff;
-  background: #363;
-  border-top-left-radius: 2px;
-  border-bottom-right-radius: 2px;
-}*/
+  top: 10px;
+  right: 10px;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  font-size: 25px;
+  text-align: center;
+  font-weight: 600;
+}
+.result.selected .close-button {
+  display: none;
+}
 .result h1 {
   margin: 0;
   font-size: 18px;

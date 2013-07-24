@@ -447,13 +447,15 @@ $(document).ready(function() {
     
             // Clear current data
             $(".result")
-                .off('click') // event listener
                 .fadeOut('fast',
                     function(){
                         $(this)
                             .removeClass('selected')
+                            .find('h1, ol')
                             .html(''); // HTML    
-                    });
+                    }
+                ).find("h1")
+                .off('click'); // event listener
             showRoute({});
     
             var fromLatLng = startMarker.getPosition();
@@ -482,7 +484,7 @@ $(document).ready(function() {
                         
                         //result.append($("<div class='number'>" + (i + 1) + "</div>"));
                         var startTime = route.legs[0].locs[0].depTime;
-                        var endTime = route.legs[route.legs.length - 1].locs[route.legs[route.legs.length - 1].locs.length - 1].arrTime;
+                        //var endTime = route.legs[route.legs.length - 1].locs[route.legs[route.legs.length - 1].locs.length - 1].arrTime;
                         var firstVehicle = "walk";
                         var longestLeg = 0;
                         if (route.legs.length > 1) {
@@ -491,15 +493,12 @@ $(document).ready(function() {
                             firstVehicle = 
                                 type + " " + formatVehicleCode(route.legs[1].code, type);
                         }
-                        result.append(
-                                $("<h1>"
-                                + startTime.substr(8, 2) + ":" + startTime.substr(10, 2) + " "
+                        result.find("h1").html(
+                                startTime.substr(8, 2) + ":" + startTime.substr(10, 2) + " "
                                 + "<span class='vehicle'>" + firstVehicle + "</span> "
-                                + "(" + route.duration / 60 + " mins)" 
-                                + "</h1>")
-                            );
+                                + "(" + route.duration / 60 + " mins)" );
                         
-                        var legs = $("<ol></ol>").appendTo(result);
+                        var legs = result.find("ol");
                         //console.log(route);
                         route.legs.forEach(function(leg, n, array) {
                             
@@ -549,8 +548,8 @@ $(document).ready(function() {
                         result.show();
                         
                         // Show route on map when clicked
-                        result.on('click',function() {
-                            var jqthis = $(this);
+                        result.find("h1").on('click',function() {
+                            var jqthis = result;
                             if (jqthis.hasClass("selected")) {
                                 if (jqthis.find("ol").is(":visible")) {
                                     console.log(jqthis.find("ol"));
@@ -560,14 +559,32 @@ $(document).ready(function() {
                                 }
                             } else {
                                 showRoute(route.legs);
-                                $(".result")
+                                $(".result.selected")
                                     .removeClass("selected")
-                                    .find("ol")
+                                    .find("ol:visible")
                                     .slideUp("fast");
+                                /*$(".result.selected")
+                                    .find(".close-button")
+                                    .fadeOut("fast");*/
                                 jqthis
                                     .addClass("selected")
                                     .find("ol")
                                     .slideDown("fast");
+                                /*jqthis
+                                    .find(".close-button")
+                                    .fadeIn("fast");*/
+                            }
+                        });
+                        
+                        // Allow hiding unwanted routes
+                        result.find(".close-button").on('click',function() {
+                            var jqthis = $(this);
+                            if (jqthis.hasClass("selected")) {
+                                // do nothing..
+                                console.log("hidden close button pressed");
+                            } else {
+                                
+                                jqthis.closest(".result").slideUp("fast");                            
                             }
                         });
                         
