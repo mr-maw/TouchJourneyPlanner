@@ -25,12 +25,7 @@ Installation instructions:
 
 1. Request Reittiopas API account from http://developer.reittiopas.fi/pages/en/account-request.php
 2. Rename config.js.template to config.js and add account details
-3. Enable Apache mod_proxy and mod_proxy_http
-
-### Notes:
-
-* apiProxy -folder is a Apache proxy to Reittiopas API to prevent cross-domain issues
-* If you want to use a different proxy, change it in config.js
+3. Install Node.js and run ```npm install```
 
 
 Running on a multitouch table with Google Chrome:
