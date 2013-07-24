@@ -1,0 +1,9 @@
+{
+  "name": "reittikartta",
+  "description": "Reittikartta",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "express": "3.3.1"
+  }
+}
