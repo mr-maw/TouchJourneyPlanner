@@ -550,15 +550,25 @@ $(document).ready(function() {
                         
                         // Show route on map when clicked
                         result.on('click',function() {
-                            showRoute(route.legs);
-                            $(".result")
-                                .removeClass("selected")
-                                .find("ol")
-                                .slideUp("fast");
-                            $(this)
-                                .addClass("selected")
-                                .find("ol")
-                                .slideDown("fast");
+                            var jqthis = $(this);
+                            if (jqthis.hasClass("selected")) {
+                                if (jqthis.find("ol").is(":visible")) {
+                                    console.log(jqthis.find("ol"));
+                                    jqthis.find("ol").slideUp("fast");
+                                } else {
+                                    jqthis.find("ol").slideDown("fast");
+                                }
+                            } else {
+                                showRoute(route.legs);
+                                $(".result")
+                                    .removeClass("selected")
+                                    .find("ol")
+                                    .slideUp("fast");
+                                jqthis
+                                    .addClass("selected")
+                                    .find("ol")
+                                    .slideDown("fast");
+                            }
                         });
                         
                         // Show the first result immediately
