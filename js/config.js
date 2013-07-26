@@ -27,4 +27,4 @@ var config = {
       "nomap":true
     }
   }
-}
+};
