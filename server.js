@@ -1,9 +1,17 @@
 var express = require('express'),
     app = express(),
     restler = require('restler');
+    
+var creds = require('./creds');
 
 app.use(express.logger());
 
+app.get('/server.js', function(req, res) {
+    res.send('Nope.');
+});
+app.get('/creds.js', function(req, res) {
+    res.send('Nope.');
+});
 
 app.use(express.static(__dirname));
 app.use(express.static("js"));
@@ -14,6 +22,7 @@ app.use(express.static("images"));
 app.get('/apiProxy/*',function(req, res){
 
     var request = req.url.replace('/apiProxy/','/');
+    request = request + "&user=" + creds.user + "&pass=" + creds.pass;
     
     restler.get('http://api.reittiopas.fi/hsl/prod' + request, {})
         .on('complete', function(data) {

@@ -15,8 +15,6 @@
 
 var config = {
   "api":"apiProxy/",
-  "user":"aaltowindow",
-  "pass":"multiTouch",
   "routeRefreshMinTime":2000, // milliseconds
   "longPressTime":500, // milliseconds
   "longPressThreshold":10, //pixels
