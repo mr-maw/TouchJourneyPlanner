@@ -468,7 +468,7 @@ $(document).ready(function() {
     
             var params = "?request=route&from=" + from + "&to=" + to + "&time=" 
                 + time + "&format=json&epsg_in=wgs84&epsg_out=wgs84";
-            var account = "&user=" + config.user + "&pass=" + config.pass;
+            var account = "";
     
             $.getJSON(config.api + params + account, function(data) {
                 $("#loader").fadeOut();
